@@ -9,16 +9,20 @@ typedef struct celula
 
 void imprime(celula *le)
 {
-    while (le != NULL)
+    celula *elem;
+
+    for (elem = le->prox; elem != NULL; elem = elem->prox)
     {
-        printf("%d ->", le->dado);
-        le = le->prox;
+        printf("%d -> ", elem->dado);
     }
+
     printf("NULL\n");
 }
 
 void imprime_rec(celula *le)
 {
+    le = le->prox;
+
     if (le == NULL)
     {
         printf("NULL\n");
@@ -26,6 +30,5 @@ void imprime_rec(celula *le)
     }
 
     printf("%d -> ", le->dado);
-    imprime_rec(le->prox);
-    return;
+    imprime_rec(le);
 }

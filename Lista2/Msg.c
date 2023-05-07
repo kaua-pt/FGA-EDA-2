@@ -3,22 +3,14 @@
 
 #define M 1572869u
 
-typedef struct Item
-{
-    int id;
-    char letra;
-} Item;
-
 int main()
 {
-    unsigned j;
-    int maior = -1, menor = 2e31, numero;
-    char l;
-    Item *v = malloc(sizeof(Item) * M);
+    unsigned int maior = 0, menor = 2e31, numero, j;
+    char *v = calloc(M, sizeof(char)), l;
 
-    while (scanf("%d %c", &numero, &l) != EOF)
+    while (scanf("%u %c", &numero, &l) != EOF)
     {
-        v[numero].letra = l;
+        v[numero] = l;
 
         if (numero > maior)
             maior = numero;
@@ -26,10 +18,6 @@ int main()
             menor = numero;
     }
 
-    for (j = menor; j <= maior; j++)
-        printf("%c", v[j].letra);
-
-    printf("\n numerozin %c\n", v[872899].letra);
-    printf("\n");
+    printf("%s\n", &v[menor]);
     return 0;
 }

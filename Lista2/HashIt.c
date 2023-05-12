@@ -1,133 +1,96 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-#define M 31
+char ht[109][20];
+int tamanho = 0;
 
-typedef struct celula
+int hash(char *entrada)
 {
-  int chave, ocorr;
-  struct celula *prox;
-} celula;
+  int h = 0, retorno = 0;
+  for (int i = 0; entrada[i] != '\0'; i++)
+    h += entrada[i] * (i + 1LL);
 
-celula th[M];
-
-int hash(int chave);
-
-void inicializa_hash(celula *th);
-int insere_hash(celula *th, int chave);
-int remove_hash(celula *th, int chave);
-int busca_ocorr(celula *th, int chave);
-void destroi_hash(celula *th);
-
-int hash(int chave)
-{
-  return chave % M;
+  retorno = (h * 19) % 101;
+  return retorno;
 }
 
-void inicializa_hash(celula *th)
+int busca(char *buscado)
 {
-  for (int i = 0; i < M; i++)
-    th[i].prox = NULL;
-}
+  int h = hash(buscado);
 
-int insere_hash(celula *th, int chave)
-{
-  celula *elem;
-  int pos = hash(chave);
-
-  for (elem = th[pos].prox;
-       elem != NULL && elem->chave != chave;
-       elem = elem->prox)
-    ;
-
-  if (elem != NULL)
-    elem->ocorr++;
-  else
+  for (int j = 0; j < 20; j++)
   {
-    celula *nova = malloc(sizeof(celula));
-    if (nova == NULL)
+    int i = (h + j * j + 23LL * j) % 101;
+    if (strcmp(ht[i], buscado) == 0)
       return 1;
-    nova->chave = chave;
-    nova->ocorr = 1;
-    nova->prox = th[pos].prox;
-    th[pos].prox = nova;
   }
 
   return 0;
 }
 
-int remove_hash(celula *th, int chave)
+void inserir(char *entrada)
 {
-  celula *elem;
-  int pos = hash(chave);
+  if (busca(entrada))
+    return;
 
-  for (elem = &th[pos];
-       elem->prox != NULL && elem->prox->chave != chave;
-       elem = elem->prox)
-    ;
-
-  if (elem->prox != NULL)
+  int h = hash(entrada);
+  for (int j = 0; j < 20; j++)
   {
-    celula *lixo = elem->prox;
-    elem->prox = lixo->prox;
-    free(lixo);
+    int i = (h + j * j + 23LL * j) % 101;
 
-    return 0;
-  }
-  else
-  {
-    return 1;
-  }
-}
-
-int busca_ocorr(celula *th, int chave)
-{
-  celula *elem;
-  int pos = hash(chave);
-
-  for (elem = th[pos].prox;
-       elem != NULL && elem->chave != chave;
-       elem = elem->prox)
-    ;
-
-  if (elem != NULL)
-    return elem->ocorr;
-  else
-    return 0;
-}
-
-void destroi_hash(celula *th)
-{
-  for (int i = 0; i < M; i++)
-  {
-    celula *elem = th[i].prox;
-    while (elem != NULL)
+    if (*ht[i] == '\0')
     {
-      celula *lixo = elem;
-      elem = elem->prox;
-      free(lixo);
+      strcpy(ht[i], entrada);
+      tamanho++;
+      break;
+    }
+  }
+}
+
+void remover(char *entrada)
+{
+  int h = hash(entrada);
+  for (int j = 0; j < 20; j++)
+  {
+    int i = (h + j * j + 23LL * j) % 101;
+
+    if (strcmp(ht[i], entrada) == 0)
+    {
+      *ht[i] = '\0';
+      tamanho--;
     }
   }
 }
 
 int main()
 {
-  int i, j, rep, op;
-  char code[5];
-  scanf("%d", &rep);
-  for (i = 0; i < rep; i++)
-  {
-    for (j = 0; j < op; j++)
-    {
-      scanf("%s", code);
-      if (code[0] == 'A')
-      {
-      }
-      if (code[0] == 'D')
-      {
-      }
-    }
-  }
+  int t;
+  scanf(" %d", &t);
 
+  while (t--)
+  {
+    for (int i = 0; i < 101; i++)
+      *ht[i] = '\0';
+    tamanho = 0;
+
+    int n;
+    scanf(" %d", &n);
+
+    char operacao[4], entrada[16];
+
+    while (n--)
+    {
+      scanf(" %s:%s", operacao, entrada);
+      if (operacao[0] == 'A')
+        inserir(entrada);
+      else
+        remover(entrada);
+    }
+    printf("%d\n", tamanho);
+    for (int i = 0; i < 101; i++)
+      if (*ht[i] != '\0')
+        printf("%d:%s\n", i, ht[i]);
+  }
   return 0;
 }

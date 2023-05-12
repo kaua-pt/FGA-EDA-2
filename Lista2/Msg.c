@@ -1,19 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define M 1572869u
+#define M (1 << 22)
 
 int main()
 {
-    unsigned int maior = 0, menor = 2e31, numero, j;
+    unsigned int menor = (1 << 20), numero;
     char *v = calloc(M, sizeof(char)), l;
 
     while (scanf("%u %c", &numero, &l) != EOF)
     {
         v[numero] = l;
 
-        if (numero > maior)
-            maior = numero;
         if (numero < menor)
             menor = numero;
     }
